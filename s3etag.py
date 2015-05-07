@@ -3,6 +3,9 @@
 """
 Simple script to generate ETag values for local files to check against
 S3 objects that were multipart uploads.
+
+For 'large' files that used multipart uploads, the each sub part is md5summed then
+they take a md5sum of the string of all the sub parts.  $!$!#%!#%!#%@#
 """
 
 # Max upload size in bytes before multipart kicks in
