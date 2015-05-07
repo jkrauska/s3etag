@@ -20,7 +20,9 @@ import binascii
 
 def etagsum(sourcePath):
     hash = hashlib.md5()
-        if  os.path.getsize(sourcePath) > max_upload:
+    
+    # If the file is bigger than a single chunk, break it up
+    if  os.path.getsize(sourcePath) > max_upload:
         partcount = 0
         md5string = ""
         with open(sourcePath, "rb") as f:
@@ -28,10 +30,11 @@ def etagsum(sourcePath):
             for chunk in iter(lambda: f.read(multipart_size), ""):
                 hash = hashlib.md5()
                 hash.update(chunk)
+                # Collect string of md5sums of each chunk
                 md5string = md5string + binascii.unhexlify(hash.hexdigest())
                 partcount += 1
 
-        # Get a hash of the string of sub hashes and list total part count
+        # Get a new hash of the string of sub hashes and list total part count
         hash = hashlib.md5()
         hash.update(md5string)
         return hash.hexdigest() + "-" + str(partcount)
